@@ -7,7 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use function symfony\Component\String\u;
 
  class VinlyController  extends AbstractController {
-    #[Route('/')]
+    #[Route('/', name: 'app_homepage')]
     public function homepage() :Response{
         $tracks = [
             ['song' => 'Gangsta\'s Paradise', 'artist' => 'Coolio'],
@@ -17,20 +17,19 @@ use function symfony\Component\String\u;
             ['song' => 'On Bended Knee', 'artist' => 'Boyz II Men'],
             ['song' => 'Fantasy', 'artist' => 'Mariah Carey'],
         ];
+       
         return  $this->render('vinly/homepage.html.twig',[
             'title'=>'PB & Jams',
             'tracks' => $tracks,
         ]);
     }
-    #[Route('/browse/{slug}')]
-    public function browse( string $slug): Response
+    #[Route('/browse/{slug}', name:'app_browse')]
+    public function browse( string $slug = null): Response
 {
-    if($slug){
-        $title= 'Genre:'.u(str_replace('-','',$slug))->title(true);
-    }else {
-        $title='all genres';
-
-    }
-    return new Response($title);
+    
+    $genre = $slug ? u(str_replace('-', ' ', $slug))->title(true) : null;
+    return $this->render('browse.html.twig', [
+        'genre' => $genre,
+    ]);
  }
  }
